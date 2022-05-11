@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 
 export default function Meme() {
+    const { REACT_APP_DOMAIN } = process.env;
+    const [error, setError]=useState(false);
     const [meme, setMeme] = React.useState({
         topText: "",
         bottomText: "",
@@ -17,17 +19,19 @@ export default function Meme() {
     you need to define the function separately inside of the callback
     function, as seen below:
     */
-    React.useEffect(() => {
+    useEffect(() => {
         function getMemes() {
-            fetch(
-                "https://api.imgflip.com/get_memes")
+            fetch(`${REACT_APP_DOMAIN}get_memes`)
                 .then((res) => res.json())
                 .then((json) => {
                     setAllMemes(json.data.memes)
                 })
+                .catch(() => {
+                    setError(true);
+                  })
         }
         getMemes()
-    }, [])
+    })
 
     function getMemeImage() {
         const randomNumber = Math.floor(Math.random() * allMemes.length)
@@ -50,7 +54,9 @@ export default function Meme() {
     }
 
     return (
-        <main>
+        <>
+        {error && <p className='load-error'>Unable to load data</p>}
+        {!error && <div>
             <div className="top-bottom-text">
                 <input
                     type="text"
@@ -80,6 +86,7 @@ export default function Meme() {
                 <h2 className="meme-text top">{meme.topText}</h2>
                 <h2 className="meme-text bottom">{meme.bottomText}</h2>
             </div>
-        </main>
+        </div>}
+        </>
     )
 }

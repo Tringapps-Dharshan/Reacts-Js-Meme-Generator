@@ -73,3 +73,10 @@ body {
 .top {
   top: 0;
 }
+
+.load-error{
+  padding: 100px;
+  color: red;
+  font-weight: 400;
+  font-size: xx-large;
+}
